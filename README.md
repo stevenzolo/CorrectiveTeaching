@@ -1,7 +1,7 @@
-# Personalized Teacher 
+# Corrective Teacher 
  Official implementation of the paper: 
  
- Towards Personalized Learning: A Bi-Level Reinforcement Learning Approach for Machine Teaching Human Tasks
+ Teaching as Iterative Correction and Evaluation: A Bi-Level Reinforcement Learning Approach
 
 ## A Novel Interactive Teaching Paradigm.
 <p align="center">
@@ -36,14 +36,14 @@ a reference.
   <img src="/imgs/optimal_windy_gridworld.png" width="400">
 </p>
 
-### Comparison between the personalized teacher and elite-player teachers.
-Results demonstrate that personalized teachers in both scenarios outperform elite-player and can better facilitate student learning.
+### Comparison between the corrective teacher and elite-player teachers.
+Results demonstrate that corrective teachers in both scenarios outperform elite-player and can better facilitate student learning.
 Instant Scenario           |  Delayed Scenario
 :-------------------------:|:-------------------------:
 ![](/imgs/instant_coach_vs_elite.png)  |  ![](/imgs/delayed_coach_vs_elite.png)
 
 ### Teach students with varying initial skill levels
-Even for the students initialized with varying skill levels, the proposed personalized teacher help can students achieve better 
+Even for the students initialized with varying skill levels, the proposed corrective teacher help can students achieve better 
 efficiency than their self-study.
 Instant Scenario           |  Delayed Scenario
 :-------------------------:|:-------------------------:
