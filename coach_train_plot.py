@@ -13,7 +13,7 @@ import gym_games
 from utils import lineplot_smoothly
 from hyperparams.grid_world_arguments import coach_args, student_learn_args, student_play_args
 from gym_games.wrappers import WindyWrapper
-from coach_agent import InstantCoach, DelayedCoach, InstantBufferedCoach
+from coach_agent import InstantCoach, DelayedCoach  # InstantBufferedCoach
 from train import coach_train
 
 
@@ -51,27 +51,28 @@ def student_saturation_in_coach_training(coach_agent, plot=True, select_first_ep
         epi_return_in_trial = np.array(repeat_trial_val['coach_return_in_epis'][:select_first_epis])
         coach_return_lst.append(
             pd.DataFrame({
-                'Training Episodes': np.arange(len(epi_return_in_trial)) + 1,
-                '-Steps per Episode': epi_return_in_trial
+                '训练幕数': np.arange(len(epi_return_in_trial)) + 1,   # Training Episodes, 训练幕数
+                '每幕步数的负值': epi_return_in_trial  # -Steps per Episode, 每幕步数的负值
             })
         )
         epi_state_num_in_trial = np.array(repeat_trial_val['coach_state_nums'][:select_first_epis])
         coach_state_nums_lst.append(
             pd.DataFrame({
-                'Training Episodes': np.arange(len(epi_state_num_in_trial)) + 1,
-                'State-action Pairs': epi_state_num_in_trial
+                '训练幕数': np.arange(len(epi_state_num_in_trial)) + 1,  # Training Episodes, 训练幕数
+                '状态-动作 对数量': epi_state_num_in_trial    # State-action Pairs, 状态-动作 对数量
             })
         )
 
     fig, ax1 = plt.subplots(figsize=(10, 8))
     lineplot_smoothly(
-        data=coach_return_lst, xaxis='Training Episodes', value='-Steps per Episode',
-        smooth=student_learn_args.learn_epis, **{"label": '-Steps per Episode', "ax": ax1, "color": 'g'}
+        data=coach_return_lst, xaxis='训练幕数', value='每幕步数的负值',
+        smooth=student_learn_args.learn_epis, **{"label": ' 每幕步数的负值 ', "ax": ax1, "color": 'g'}
     )
+    plt.legend(loc='right').set_draggable(True)
     ax2 = ax1.twinx()
     lineplot_smoothly(
-        data=coach_state_nums_lst, xaxis='Training Episodes', value='State-action Pairs',
-        smooth=student_learn_args.learn_epis, **{"label": 'State-action Pairs', "ax": ax2, "color": 'b'}
+        data=coach_state_nums_lst, xaxis='训练幕数', value='状态-动作 对数量',
+        smooth=student_learn_args.learn_epis, **{"label": '状态-动作 对数量', "ax": ax2, "color": 'b'}
     )
     plt.legend(loc='right').set_draggable(True)
     plt.show()
@@ -95,8 +96,8 @@ def finetune_student_reset_in_coach_training(
         log_folder = os.path.join("logs", "windy_grid_world", "finetune_student_reset_instant_instr_coach")
     elif coach_agent is DelayedCoach:
         log_folder = os.path.join("logs", "windy_grid_world", "finetune_student_reset_delayed_instr_coach")
-    elif coach_agent is InstantBufferedCoach:
-        log_folder = os.path.join("logs", "windy_grid_world", "finetune_student_reset_instant_buffer_coach")
+    # elif coach_agent is InstantBufferedCoach:
+    #     log_folder = os.path.join("logs", "windy_grid_world", "finetune_student_reset_instant_buffer_coach")
     else:
         raise NameError('Undefined coach agent')
 
@@ -133,24 +134,24 @@ def finetune_student_reset_in_coach_training(
     # line smooth plot
     training_return_collection = [
         pd.DataFrame({
-            'Student Reset Frequency': np.array(student_reset_lst),
-            '-Steps per Episode': train_trial
+            '学员策略重置频率': np.array(student_reset_lst),
+            '每幕步数的负值': train_trial
         }) for train_trial in np.array(training_return_in_trials).T
     ]
     eval_return_collection = [
         pd.DataFrame({
-            'Student Reset Frequency': np.array(student_reset_lst),
-            '-Steps per Episode': eval_trial
+            '学员策略重置频率': np.array(student_reset_lst),
+            '每幕步数的负值': eval_trial
         }) for eval_trial in np.array(eval_return_in_trials).T
     ]
     fig, ax1 = plt.subplots(figsize=(10, 8))
     lineplot_smoothly(
-        data=training_return_collection, xaxis='Student Reset Frequency', value='-Steps per Episode',
-        smooth=3, **{"label": 'Train', "color": 'g'}
+        data=training_return_collection, xaxis='学员策略重置频率', value='每幕步数的负值',
+        smooth=3, **{"label": '训练', "color": 'g'}
     )
     lineplot_smoothly(
-        data=eval_return_collection, xaxis='Student Reset Frequency', value='-Steps per Episode',
-        smooth=3, **{"label": 'Evaluation', "color": 'b'}
+        data=eval_return_collection, xaxis='学员策略重置频率', value='每幕步数的负值',
+        smooth=3, **{"label": '评估', "color": 'b'}
     )
     plt.legend().set_draggable(True)
     plt.show()
@@ -205,31 +206,31 @@ def dive_into_train_eval_detail(
             train_return_trial = np.array(repeat_trial_val['coach_return_in_epis'][:])  # select_first_epis=np.inf,
             coach_return_lst.append(
                 pd.DataFrame({
-                    'Training Episodes': np.arange(len(train_return_trial)) + 1,
-                    '-Steps per Episode': train_return_trial
+                    '训练幕数': np.arange(len(train_return_trial)) + 1,
+                    '每幕步数的负值': train_return_trial
                 })
             )
             eval_return_trial = -np.array(repeat_trial_val['eval_return_in_epis'])
             eval_return_lst.append(
                 pd.DataFrame({
-                    'Training Episodes': np.arange(
+                    '训练幕数': np.arange(
                         coach_args.eval_every_epis, coach_args.train_epis + coach_args.eval_every_epis,
                         step=coach_args.eval_every_epis),
-                    '-Steps per Episode': eval_return_trial
+                    '每幕步数的负值': eval_return_trial
                 })
 
             )
         lineplot_smoothly(
-            data=coach_return_lst, xaxis='Training Episodes', value='-Steps per Episode', smooth=train_smooth,
-            **{"label": r'$\rho={}$, Train'.format(reset_epis), "color": color_lst[ix], "ax": ax1}  #
+            data=coach_return_lst, xaxis='训练幕数', value='每幕步数的负值', smooth=train_smooth,
+            **{"label": r'$\rho={}$, 训练'.format(reset_epis), "color": color_lst[ix], "ax": ax1}  #
         )
         lineplot_smoothly(
-            data=eval_return_lst, xaxis='Training Episodes', value='-Steps per Episode', smooth=eval_smooth,
-            **{"label": r'$\rho={}$, Eval'.format(reset_epis), "color": color_lst[ix], "ls": '--', "ax": ax1}  #
+            data=eval_return_lst, xaxis='训练幕数', value='每幕步数的负值', smooth=eval_smooth,
+            **{"label": r'$\rho={}$, 评估'.format(reset_epis), "color": color_lst[ix], "ls": '--', "ax": ax1}  #
         )
     plt.plot(
         [1, coach_args.train_epis], [student_self_play_return, student_self_play_return],
-        '--r', lw=3, label='Self-study'
+        '--r', lw=3, label='自学'
     )
     plt.legend().set_draggable(True)
     plt.show()
@@ -251,10 +252,10 @@ def compare_train_speed(student_reset_lst, select_first_epis):
     instant_avg_return_lst = [_load_avg_return(reset_epi, instant_log_folder)for reset_epi in student_reset_lst]
     delayed_avg_return_lst = [_load_avg_return(reset_epi, delayed_log_folder) for reset_epi in student_reset_lst]
     fig, ax1 = plt.subplots(figsize=(10, 8))
-    plt.plot(np.array(student_reset_lst), instant_avg_return_lst, lw=4, label='Instant Teacher')
-    plt.plot(np.array(student_reset_lst), delayed_avg_return_lst, lw=4, label='Delayed Teacher')
-    plt.xlabel("Student Reset Frequency")
-    plt.ylabel("-Steps per Episode")
+    plt.plot(np.array(student_reset_lst), instant_avg_return_lst, lw=4, label='指令即时生效场景')
+    plt.plot(np.array(student_reset_lst), delayed_avg_return_lst, lw=4, label='指令延迟生效场景')
+    plt.xlabel("学员策略重置频率")
+    plt.ylabel("每幕步数的负值")
     plt.legend().set_draggable(True)
     plt.show()
     return
@@ -318,7 +319,7 @@ if __name__ == '__main__':
     # student_saturation_in_coach_training(
     #     # InstantCoach: take <2k episodes for coach return -15, state numbers 30+ ~ 15.
     #     # DelayedCoach: take <3k episodes for coach return -15, state numbers 40+ ~ 15.
-    #     coach_agent=DelayedCoach,
+    #     coach_agent=DelayedCoach,   # InstantCoach, DelayedCoach
     #     plot=True,
     #     select_first_epis=int(5e3)     # Select same length of samples for different coach agents
     # )
@@ -335,8 +336,8 @@ if __name__ == '__main__':
     # )
 
     # dive_into_train_eval_detail(
-    #     # coach_agent=InstantCoach, selected_student_reset_lst=[2, 2000],
-    #     coach_agent=DelayedCoach, selected_student_reset_lst=[1, 8, 2000],
+    #     coach_agent=InstantCoach, selected_student_reset_lst=[2, 2000],
+    #     # coach_agent=DelayedCoach, selected_student_reset_lst=[1, 8, 2000],
     #     self_play_log_path=student_play_args.log_path,
     #     train_smooth=student_learn_args.learn_epis,    # So, each point in train/eval is comparable
     #     eval_smooth=5   # experimental

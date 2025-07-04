@@ -1,12 +1,14 @@
 import pickle
 import numpy as np
 import pandas as pd
-from matplotlib import pyplot as plt
-import seaborn as sns
 
+from matplotlib import pyplot as plt
 import matplotlib
 matplotlib.use('TkAgg')
-sns.set(style="whitegrid", font_scale=2)   # 1.5, darkgrid
+
+import seaborn as sns
+rc = {'axes.unicode_minus': False}  # to display minus symbol
+sns.set(style="whitegrid", font_scale=2, font='simsun', rc=rc)   # 1.5, darkgrid , font='SimHei'
 
 
 def lineplot_smoothly(data, xaxis, value, smooth=1, **kwargs):
@@ -71,16 +73,16 @@ def eval_one_config(log_path, plot_kwargs, smooth):
     for trial in student_learn_log['trial_results']:
         return_over_trials.append(
             pd.DataFrame({
-                'Evaluation Episodes': np.linspace(
+                '评估幕数': np.linspace(
                     int(len(trial['return_in_epis'])/len(trial['eval_score_lst'])),   # ['epis_in_session']
                     len(trial['return_in_epis']),   # training episodes
                     len(trial['eval_score_lst'])
                 ),
-                '-Steps per Episode': -np.array(trial['eval_score_lst'])
+                '每幕步数的负值': -np.array(trial['eval_score_lst'])
             })
         )
     lineplot_smoothly(
-        data=return_over_trials, xaxis='Evaluation Episodes', value='-Steps per Episode',
+        data=return_over_trials, xaxis='评估幕数', value='每幕步数的负值',
         smooth=smooth, **plot_kwargs
     )
     return

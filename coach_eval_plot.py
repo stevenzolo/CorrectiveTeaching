@@ -98,10 +98,10 @@ def standard_vs_personalized_instr(
 
     fig, ax = plt.subplots(figsize=(10, 8))
     for log_name, label in zip(['learn_from_coach', 'learn_from_elite'],
-                               ['Corrective Teaching', 'Elite-player Teaching']):
+                               ['个性化指导', '精英教师指导']):
         log_path = os.path.join(log_folder, log_name)
         eval_one_config(log_path, {"label": label}, smooth)
-    eval_one_config(student_play_args.log_path, {"label": 'Self-study', "color": 'r', "ls": '--'}, smooth)
+    eval_one_config(student_play_args.log_path, {"label": '自学', "color": 'r', "ls": '--'}, smooth)
     plt.legend().set_draggable(True)
     plt.show()
     return
@@ -142,11 +142,11 @@ def coach_varying_level_student(student_agent, coach_path, q_delta, smooth=10, p
 
     fig, ax = plt.subplots(figsize=(10, 8))
     log_lst = ['uniformed_learn', 'varied_learn', 'varied_self_play']
-    label_lst = ['Identical Learning', 'Varying Learning', 'Varying Self-study']
+    label_lst = ['相同初始水平-跟学', '不同初始水平-跟学', '不同初始水平-自学']
     for log_name, label in zip(log_lst, label_lst):
         log_path = os.path.join(log_folder, log_name)
         eval_one_config(log_path, {"label": label}, smooth)
-    eval_one_config(student_play_args.log_path, {"label": 'Identical Self-study', "color": 'r', "ls": '--'}, smooth)
+    eval_one_config(student_play_args.log_path, {"label": '相同初始水平-自学', "color": 'r', "ls": '--'}, smooth)
     plt.legend().set_draggable(True)
     plt.show()
     return
@@ -183,11 +183,11 @@ def instruction_reward_ablation(student_agent, coach_path, smooth=10, plot=True)
 
     fig, ax = plt.subplots(figsize=(10, 8))
     log_lst = ['only_task_reward', 'with_instr_reward']
-    label_lst = ['Only Task Reward', 'Task+Evaluative Reward']
+    label_lst = ['仅任务奖励', '任务+评估奖励']
     for log_name, label in zip(log_lst, label_lst):
         log_path = os.path.join(log_folder, log_name)
         eval_one_config(log_path, {"label": label}, smooth)
-    eval_one_config(student_play_args.log_path, {"label": 'Self-study', "color": 'r', "ls": '--'}, smooth)
+    eval_one_config(student_play_args.log_path, {"label": '自学', "color": 'r', "ls": '--'}, smooth)
     plt.legend().set_draggable(True)
     plt.show()
     return
@@ -206,12 +206,12 @@ if __name__ == '__main__':
     #     smooth=5, plot=True
     # )
 
-    standard_vs_personalized_instr(
-        # student_agent=InstantStudent, personal_coach_path="models/windy_grid_world/instant_coach_reset_2.pt",
-        student_agent=DelayedStudent, personal_coach_path="models/windy_grid_world/delayed_coach_reset_8.pt",
-        elite_student_path=student_play_args.model_path,
-        plot=True   # plot with previous log
-    )
+    # standard_vs_personalized_instr(
+    #     # student_agent=InstantStudent, personal_coach_path="models/windy_grid_world/instant_coach_reset_2.pt",
+    #     student_agent=DelayedStudent, personal_coach_path="models/windy_grid_world/delayed_coach_reset_8.pt",
+    #     elite_student_path=student_play_args.model_path,
+    #     plot=True   # plot with previous log
+    # )
 
     # coach_varying_level_student(
     #     # student_agent=InstantStudent, coach_path="models/instant_instr_coach_reset_1_epi.pt",
@@ -219,8 +219,8 @@ if __name__ == '__main__':
     #     q_delta=1.0, plot=True
     # )
 
-    # instruction_reward_ablation(
-    #     # student_agent=InstantStudent, coach_path="models/grid_world_gym/instant_coach_reset_2.pt",
-    #     student_agent=DelayedStudent, coach_path="models/grid_world_gym/delayed_coach_reset_8.pt",
-    #     plot=True
-    # )
+    instruction_reward_ablation(
+        # student_agent=InstantStudent, coach_path="models/grid_world_gym/instant_instr_coach_reset_1_epi.pt",
+        student_agent=DelayedStudent, coach_path="models/grid_world_gym/delayed_coach_reset_8.pt",
+        plot=True
+    )
